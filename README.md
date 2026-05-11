@@ -11,12 +11,12 @@ Custom developed android app to watch BTC address mining at ckpool.org
   * Generates activity Timeline
 
 ## Compatibility: Minimun Android 13 (SDK 33)
-* Testing devices ([Screenshots](https://github.com/victoruniformsolo/watch-ckpool-public/tree/master/assets/screenshots))
+* Testing devices ([Screenshots](assets/screenshots))
   * Adroid 14 (Realme)
   * Adroid 15 (Motorola)
 
 ## Installation
-Download the [installation APK file](https://github.com/victoruniformsolo/watch-ckpool-public/releases) to android device and run.
+Download the [installation APK file](releases) to android device and run.
 * _requires to Enable Unknown Sources as the app is not published on Play_
 
 ## Legal 
