@@ -204,13 +204,12 @@ fun DashboardScreen(
                 }
                 Row{
                 Text(
-                    "Mode: ${settings.refreshInterval}m | ",
+                    text = "Mode: " + if (settings.refreshInterval == 1440) "Daily" else "${settings.refreshInterval}m",
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.secondary
                 )
-                //    Spacer(Modifier.width(8.dp))
                 Text(
-                    "Last sync: $timeText",
+                    " • Last sync: $timeText",
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.primary
                 )
@@ -950,6 +949,7 @@ fun ConnectionScreen(repo: MonitorRepository, settings: AppSettings, onBack: () 
             label = { Text("BTC Address") },
             isError = input.isNotEmpty() && !isValid,
             modifier = Modifier.fillMaxWidth(),
+            singleLine = true,
             supportingText = {
                 if (input.isNotEmpty() && !isValid) Text("Invalid BTC address format")})
 
@@ -1035,12 +1035,13 @@ fun ConnectionScreen(repo: MonitorRepository, settings: AppSettings, onBack: () 
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            listOf(15, 30, 60).forEach { minutes ->
+            listOf(15, 30, 60, 1440).forEach { minutes ->
                 RadioButton(
                     selected = (settings.refreshInterval == minutes),
                     onClick = { scope.launch { repo.updateRefreshInterval(minutes) } }
                 )
-                Text("${minutes}m")
+                Text(
+                    text = if(minutes == 1440) "Daily" else "${minutes}m" )
                 Spacer(Modifier.width(8.dp))
             }
         }
