@@ -1596,7 +1596,7 @@ fun AboutScreen(onDismiss: () -> Unit) {
                                 try {
                                     val result = withContext(Dispatchers.IO) {
                                         val conn =
-                                            java.net.URL("https://api.github.com/repos/victoruniformsolo/watch-ckpool-public/releases/latest")
+                                            java.net.URL("https://api.github.com/repos/victoruniformsolo/watch-ckpool/releases/latest")
                                                 .openConnection() as java.net.HttpURLConnection
                                         conn.connectTimeout = 5000
                                         if (conn.responseCode == 200) {
