@@ -16,7 +16,7 @@ Custom developed android app to watch BTC address mining at ckpool.org
   * Adroid 15 (Motorola)
 
 ## Installation
-Download the [installation APK file](releases) to android device and run.
+Download the [installation APK file](https://github.com/victoruniformsolo/watch-ckpool-public/releases) to android device and run.
 * _requires to Enable Unknown Sources as the app is not published on Play_
 
 ## Legal 
