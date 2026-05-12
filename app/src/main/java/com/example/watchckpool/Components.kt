@@ -205,7 +205,7 @@ fun DashboardScreen(
                 }
                 Row{
                 Text(
-                    text = "Mode: " + if (settings.refreshInterval == 1440) "Daily" else "${settings.refreshInterval}m",
+                    text = "Mode: " + if (settings.refreshInterval <= 60) "${settings.refreshInterval}m" else "${settings.refreshInterval/60}h"  ,
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.secondary
                 )
@@ -1031,23 +1031,34 @@ fun ConnectionScreen(repo: MonitorRepository, settings: AppSettings, onBack: () 
         }
 
         Spacer(Modifier.height(16.dp))
-        Text("Background Check Frequency:", style = MaterialTheme.typography.titleMedium)
+        Text("Background Check Frequency", style = MaterialTheme.typography.titleMedium)
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            listOf(15, 30, 60, 1440).forEach { minutes ->
-                RadioButton(
-                    selected = (settings.refreshInterval == minutes),
-                    onClick = { scope.launch { repo.updateRefreshInterval(minutes) } }
-                )
-                Text(
-                    text = if(minutes == 1440) "Daily" else "${minutes}m" )
-                Spacer(Modifier.width(8.dp))
+            val refreshIntervals = listOf(15, 30, 60, 360, 720)
+            SingleChoiceSegmentedButtonRow(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                refreshIntervals.forEach { minutes ->
+                    SegmentedButton(
+                        selected = settings.refreshInterval == minutes,
+                        onClick = { scope.launch { repo.updateRefreshInterval(minutes) } },
+                        shape = SegmentedButtonDefaults.itemShape(
+                            index = refreshIntervals.indexOf(
+                                minutes
+                            ), count = refreshIntervals.count()
+                        )
+                    ) {
+                        Text(
+                            text = if (minutes > 60) "${minutes / 60}h" else "${minutes}m"
+                        )
+                    }
+                }
             }
         }
-
-
     }
 }
 

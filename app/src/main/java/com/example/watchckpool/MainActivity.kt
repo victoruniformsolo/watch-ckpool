@@ -110,7 +110,7 @@ fun MainApp(repo: MonitorRepository, settings: AppSettings) {
                     color = MaterialTheme.colorScheme.primary
                 )
                 Text(
-                    "Solo Mining Monitor • ${BuildConfig.VERSION_NAME} ",
+                    "Solo Mining Monitor • ${BuildConfig.VERSION_NAME}",
                     style = MaterialTheme.typography.labelSmall
                 )
             }
