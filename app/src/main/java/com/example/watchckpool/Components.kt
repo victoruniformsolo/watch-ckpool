@@ -49,6 +49,7 @@ import com.example.watchckpool.WatchUtils.formatLargeNumber
 import com.example.watchckpool.WatchUtils.formatTimestamp
 import com.example.watchckpool.WatchUtils.shortUsersAddy
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
@@ -909,6 +910,8 @@ fun InfoRow(label: String, value: String) {
 @Composable
 fun ConnectionScreen(repo: MonitorRepository, settings: AppSettings, onBack: () -> Unit) {
     var input by remember { mutableStateOf(settings.btcAddress) }
+    var inputServ by remember { mutableStateOf(settings.selectedUrl) }
+    var isIntervalLocked by remember { mutableStateOf(false) }
 
     val scope = rememberCoroutineScope()
     val isValid = input.matches(Regex("^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$|^(bc1)[a-z0-9]{39,59}$"))
@@ -918,7 +921,6 @@ fun ConnectionScreen(repo: MonitorRepository, settings: AppSettings, onBack: () 
         "AU" to "https://ausolo.ckpool.org/users/"
     )
 
-    var inputServ by remember { mutableStateOf(settings.selectedUrl) }
     val isDirty = input != settings.btcAddress || inputServ != settings.selectedUrl
 
     Column(Modifier.padding(16.dp)) {
@@ -936,8 +938,8 @@ fun ConnectionScreen(repo: MonitorRepository, settings: AppSettings, onBack: () 
             urls.forEach { (label, url) ->
 
                 RadioButton(
-                    selected = (url == settings.selectedUrl),
-                    onClick = { scope.launch { repo.updateUrl(url) } })
+                    selected = (url == inputServ),
+                    onClick = { inputServ = url })
                 Text(label)
 
             }
@@ -965,9 +967,9 @@ fun ConnectionScreen(repo: MonitorRepository, settings: AppSettings, onBack: () 
                 scope.launch {
                     isTesting = true
                     testResult = "Testing connection..."
-                    repo.addLog("Manual test started for $input")
+                    repo.addLog("Manual test started for $input on $inputServ")
                     try {
-                        val testUrl = "${settings.selectedUrl}$input"
+                        val testUrl = "$inputServ$input"
                         val result = withContext(Dispatchers.IO) {
                             val connection =
                                 java.net.URL(testUrl).openConnection() as java.net.HttpURLConnection
@@ -982,6 +984,7 @@ fun ConnectionScreen(repo: MonitorRepository, settings: AppSettings, onBack: () 
                                     )
                                 ) {
                                     scope.launch {
+                                        repo.updateUrl(inputServ)
                                         repo.updateBtc(input)
                                         onBack()
                                     }
@@ -1045,7 +1048,15 @@ fun ConnectionScreen(repo: MonitorRepository, settings: AppSettings, onBack: () 
                 refreshIntervals.forEach { minutes ->
                     SegmentedButton(
                         selected = settings.refreshInterval == minutes,
-                        onClick = { scope.launch { repo.updateRefreshInterval(minutes) } },
+                        onClick = {
+                            scope.launch {
+                                isIntervalLocked = true
+                                repo.updateRefreshInterval(minutes)
+                                delay(5000)
+                                isIntervalLocked = false
+                            }
+                        },
+                        enabled = !isIntervalLocked,
                         shape = SegmentedButtonDefaults.itemShape(
                             index = refreshIntervals.indexOf(
                                 minutes
