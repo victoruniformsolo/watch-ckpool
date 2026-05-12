@@ -3,6 +3,7 @@
 package com.example.watchckpool
 
 import android.Manifest
+import com.example.watchckpool.BuildConfig
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle

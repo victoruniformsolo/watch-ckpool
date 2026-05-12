@@ -2,6 +2,7 @@
 
 package com.example.watchckpool
 
+import com.example.watchckpool.BuildConfig
 import android.content.Intent
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
