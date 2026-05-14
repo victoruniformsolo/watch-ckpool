@@ -362,7 +362,7 @@ fun DashboardScreen(
                                 )
                             }
                             Text(
-                                text = if (authorised > 0) "Mining Since ${formatTimestamp(authorised, true)}" else "Status: Awaiting first share",
+                                text = if (authorised > 0) "Mining Since ${formatTimestamp(authorised, true) +" ("+ ((System.currentTimeMillis() / 1000) - authorised)/86400 } days)" else "Status: Awaiting first share",
                                 style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.secondary
                             )

@@ -86,7 +86,8 @@ fun calculatePercentChange(old: Double, new: Double): String {
         return when {
             diff < 60 -> "Just now" //diff < 60 -> "${diff}s ago"
             diff < 3600 -> "${diff / 60}m ago"
-            else -> "${diff / 3600}h ago"
+            diff < 86400 -> "${diff / 3600}h ago"
+            else -> "${diff / 86400}d ago"
         }
     }
 }
