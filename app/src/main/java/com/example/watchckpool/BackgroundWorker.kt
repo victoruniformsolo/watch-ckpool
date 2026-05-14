@@ -126,6 +126,18 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker
                 }
             }
 
+            // Update achievement winners (Gold/Silver)
+            current["worker"]?.jsonArray?.forEach {
+                val w = it.jsonObject
+                val wName = w["workername"]?.jsonPrimitive?.content ?: ""
+                if (w["bestever"]?.jsonPrimitive?.longOrNull == newBestEver && newBestEver > 0) {
+                    repo.updateBestEverWorker(wName)
+                }
+                if (w["bestshare"]?.jsonPrimitive?.doubleOrNull == newBestShare && newBestShare > 0) {
+                    repo.updateBestShareWorker(wName)
+                }
+            }
+
             // 4. Workers Array Comparison
             val oldWorkers = old["worker"]?.jsonArray?.associateBy {
                 it.jsonObject["workername"]?.jsonPrimitive?.content ?: ""

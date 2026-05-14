@@ -813,14 +813,23 @@ fun WorkersScreen(
                 }
             }
             items(processedWorkers) { worker ->
-                WorkerRow(worker)
+                val wName = worker["workername"]?.jsonPrimitive?.content ?: ""
+                WorkerRow(
+                    worker = worker,
+                    isGold = wName == settings.bestEverWorker && settings.bestEverWorker.isNotEmpty(),
+                    isSilver = wName == settings.bestShareWorker && settings.bestShareWorker.isNotEmpty()
+                )
             }
         }
     }
 }
 
 @Composable
-fun WorkerRow(worker: kotlinx.serialization.json.JsonObject) {
+fun WorkerRow(
+    worker: kotlinx.serialization.json.JsonObject,
+    isGold: Boolean = false,
+    isSilver: Boolean = false
+) {
     var expanded by remember { mutableStateOf(false) }
     val name = WatchUtils.cleanWorkerName(worker["workername"]?.jsonPrimitive?.content)
     val hashrate = worker["hashrate1m"]?.jsonPrimitive?.content ?: "0H"
@@ -831,13 +840,27 @@ fun WorkerRow(worker: kotlinx.serialization.json.JsonObject) {
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .fillMaxWidth()
             .clickable { expanded = !expanded },
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+        colors = CardDefaults.cardColors(
+            containerColor = when {
+                isGold -> Color(0xFFFFD700).copy(alpha = 0.1f) // Gold background tint
+                isSilver -> Color(0xFFC0C0C0).copy(alpha = 0.1f) // Silver background tint
+                else -> MaterialTheme.colorScheme.surface
+            }
+        ),
+        border = if (isGold || isSilver) BorderStroke(
+            1.dp,
+            if (isGold) Color(0xFFFFD700) else Color(0xFFC0C0C0)
+        ) else null
     ) {
         Column(Modifier.padding(12.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
+                if (isGold) Text("🏆 ", fontSize = 18.sp)
+                else if (isSilver) Text("🥈 ", fontSize = 18.sp)
+
                 Text(
                     text = name,
                     style = MaterialTheme.typography.titleMedium,
+                    fontWeight = if (isGold || isSilver) FontWeight.Bold else FontWeight.Normal,
                     modifier = Modifier.weight(1f),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
@@ -865,7 +888,24 @@ fun WorkerRow(worker: kotlinx.serialization.json.JsonObject) {
                             .fillMaxWidth()
                     ) {
                         Column(Modifier.weight(1f)) {
-
+                            if (isGold) {
+                                Text(
+                                    "🏅 Miner BestEver Record Holder",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = Color(0xFFB8860B),
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Spacer(Modifier.height(4.dp))
+                            }
+                            if (isSilver) {
+                                Text(
+                                    "🥈 Miner BestShare Record Holder",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = Color(0xFF708090),
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Spacer(Modifier.height(4.dp))
+                            }
 
                             InfoRow(
                                 "Shares",
@@ -952,7 +992,7 @@ fun ConnectionScreen(repo: MonitorRepository, settings: AppSettings, onBack: () 
             label = { Text("BTC Address") },
             isError = input.isNotEmpty() && !isValid,
             modifier = Modifier.fillMaxWidth(),
-            singleLine = true,
+            singleLine = false,
             supportingText = {
                 if (input.isNotEmpty() && !isValid) Text("Invalid BTC address format")})
 

@@ -28,6 +28,8 @@ class MonitorRepository(private val context: Context) {
     private val LOGS_KEY = stringPreferencesKey("system_logs")
     private val LAST_SYNC_KEY = longPreferencesKey("last_sync_time")
     private val REFRESH_INTERVAL = intPreferencesKey("refresh_interval")
+    private val BEST_EVER_WORKER = stringPreferencesKey("best_ever_worker")
+    private val BEST_SHARE_WORKER = stringPreferencesKey("best_share_worker")
 
     // Log & Notify Keys
     private val LOG_MINER_WORKERS = booleanPreferencesKey("log_miner_workers")
@@ -68,7 +70,9 @@ class MonitorRepository(private val context: Context) {
                 notifyWorkerBestShare = p[NOTIFY_WORKER_BEST_SHARE] ?: false,
                 notifyWorkerBestEver = p[NOTIFY_WORKER_BEST_EVER] ?: false,
                 notifyWorkerHashrate = p[NOTIFY_WORKER_HASHRATE] ?: false,
-                refreshInterval = p[REFRESH_INTERVAL] ?: 15
+                refreshInterval = p[REFRESH_INTERVAL] ?: 15,
+                bestEverWorker = p[BEST_EVER_WORKER] ?: "",
+                bestShareWorker = p[BEST_SHARE_WORKER] ?: ""
             )
         } catch (e: Exception) {
             AppSettings() // Safe fallback
@@ -95,6 +99,8 @@ class MonitorRepository(private val context: Context) {
     suspend fun updateUrl(url: String) = context.dataStore.edit { it[URL_KEY] = url }
     suspend fun updateTheme(mode: ThemeMode) = context.dataStore.edit { it[THEME_KEY] = mode.name }
     suspend fun updateRefreshInterval(interval: Int) = context.dataStore.edit { it[REFRESH_INTERVAL] = interval }
+    suspend fun updateBestEverWorker(name: String) = context.dataStore.edit { it[BEST_EVER_WORKER] = name }
+    suspend fun updateBestShareWorker(name: String) = context.dataStore.edit { it[BEST_SHARE_WORKER] = name }
 
     suspend fun updateSetting(key: String, value: Boolean) = context.dataStore.edit { p ->
         when (key) {

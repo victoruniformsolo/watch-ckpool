@@ -11,6 +11,10 @@ data class AppSettings(
     val themeMode: ThemeMode = ThemeMode.SYSTEM,
     val refreshInterval: Int = 15,
 
+    // Achievement Trackers
+    val bestEverWorker: String = "",
+    val bestShareWorker: String = "",
+
     // Miner Logging & Notifications
     val logMinerWorkers: Boolean = false,
     val logMinerBestShare: Boolean = false,
