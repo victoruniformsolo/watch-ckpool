@@ -7,8 +7,10 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.File
@@ -130,7 +132,9 @@ class MonitorRepository(private val context: Context) {
             val file = File(context.filesDir, fileName)
             val time = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
             val line = "[$time]|$message\n"
-            FileOutputStream(file, true).use { it.write(line.toByteArray()) }
+            withContext(Dispatchers.IO) {
+                FileOutputStream(file, true).use { it.write(line.toByteArray()) }
+            }
         } catch (e: Exception) {
             addLog("Failed to write to $fileName: ${e.localizedMessage}")
         }

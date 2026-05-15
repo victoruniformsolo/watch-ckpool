@@ -16,6 +16,7 @@ import kotlinx.serialization.json.*
 import java.net.HttpURLConnection
 import java.net.URL
 import java.util.concurrent.TimeUnit
+import androidx.core.net.toUri
 
 class BackgroundWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx, params) {
     override suspend fun doWork(): Result {
@@ -267,7 +268,7 @@ class BackgroundWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker
         // Create Intent with deep link URI
         val intent = Intent(
             Intent.ACTION_VIEW,
-            Uri.parse("watchckpool://navigate/$route"),
+            "watchckpool://navigate/$route".toUri(),
             applicationContext,
             MainActivity::class.java
         )
