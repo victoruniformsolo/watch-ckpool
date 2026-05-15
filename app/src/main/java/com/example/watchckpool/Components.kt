@@ -1495,7 +1495,7 @@ fun AboutScreen(onDismiss: () -> Unit) {
         ) {
             BehaviorItem(
                 "Background Monitoring",
-                "Checks the CKPool API every (15,30 or 60) minutes to monitor activity."
+                "Checks the CKPool API in selected intervals."
             )
 
             BehaviorItem(
