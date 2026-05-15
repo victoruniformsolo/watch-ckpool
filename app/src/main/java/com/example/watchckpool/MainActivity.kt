@@ -14,6 +14,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
@@ -251,7 +252,7 @@ fun MainTabsPager(
             }
         }
 
-        NavigationBar {
+        NavigationBar(windowInsets = WindowInsets(0)) {
             NavigationBarItem(
                 selected = pagerState.currentPage == 0,
                 onClick = { scope.launch { pagerState.animateScrollToPage(0) } },
